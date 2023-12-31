@@ -30,37 +30,41 @@
                         <?php
                         $totalPrice = 0; // Khởi tạo biến tổng tiền
 
-                        foreach ($cartProducts as $product) :
-                            $formattedPrice = number_format($product['price'], 0, ',', '.');
-                            $subtotal = $_SESSION['cart'][$product['id']] * $product['price']; // Tính giá trị của từng sản phẩm trong giỏ hàng
-                            $totalPrice += $subtotal; // Cập nhật tổng tiền
+                        if (isset($cartProducts) && is_array($cartProducts)) {
+                            foreach ($cartProducts as $product) {
+                                $formattedPrice = number_format($product['price'], 0, ',', '.');
+                                $subtotal = $_SESSION['cart'][$product['id']] * $product['price']; // Tính giá trị của từng sản phẩm trong giỏ hàng
+                                $totalPrice += $subtotal; // Cập nhật tổng tiền
                         ?>
-                            <tr data-product-id="<?= $product['id']; ?>" data-product-price="<?= $product['price']; ?>">
-                                <td class="align-middle"><img src="/phpbanhang/public/images/products/<?= $product['image']; ?>" alt="<?= $product['name']; ?>" style="width: 50px;"> <?= $product['name']; ?></td>
-                                <td class="align-middle"><?= $formattedPrice . ' VND'; ?></td>
-                                <td class="align-middle">
-                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
+                                <tr data-product-id="<?= $product['id']; ?>" data-product-price="<?= $product['price']; ?>">
+                                    <td class="align-middle"><img src="/phpbanhang/public/images/products/<?= $product['image']; ?>" alt="<?= $product['name']; ?>" style="width: 50px;"> <?= $product['name']; ?></td>
+                                    <td class="align-middle"><?= $formattedPrice . ' VND'; ?></td>
+                                    <td class="align-middle">
+                                        <div class="input-group quantity mx-auto" style="width: 100px;">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-minus">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
+                                            <input disabled type="text" min="1" class="form-control form-control-sm bg-secondary border-0 text-center disable" value="<?php echo $_SESSION['cart'][$product['id']]; ?>">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-plus">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <input disabled type="text" min="1" class="form-control form-control-sm bg-secondary border-0 text-center disable" value="<?php echo $_SESSION['cart'][$product['id']]; ?>">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="align-middle total-price"><?= number_format($subtotal, 0, ',', '.') . ' ₫'; ?></td>
-                                <td class="align-middle">
-                                    <button class="btn btn-sm btn-danger btn-remove-product" data-product-id="<?= $product['id']; ?>">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                                    </td>
+                                    <td class="align-middle total-price"><?= number_format($subtotal, 0, ',', '.') . ' ₫'; ?></td>
+                                    <td class="align-middle">
+                                        <button class="btn btn-sm btn-danger btn-remove-product" data-product-id="<?= $product['id']; ?>">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                        <?php
+                            }
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>

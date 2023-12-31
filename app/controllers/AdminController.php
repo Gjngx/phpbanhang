@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once ('app/helpers/SessionHelper.php');
 class AdminController
 {
@@ -39,7 +38,6 @@ class AdminController
         $totalAuthors = $this->authorModel->getTotalAuthors();
         $totalPages = ceil($totalAuthors / $limit);
         $authors = $this->authorModel->getAuthorsPage($limit, $offset);
-
         include_once 'app/views/admin/author/author.php';
     }
     public function createauthor()

@@ -24,7 +24,7 @@
                             <h5 class="card-title fw-semibold mb-4">Cập nhật thể loại</h5>
                             <div class="card">
                                 <div class="card-body">
-                                    <?php session_start();
+                                    <?php 
                                     if (isset($_SESSION['errorMessage']) && !empty($_SESSION['errorMessage'])) : ?>
                                         <div class="alert alert-danger" role="alert">
                                             <?php echo $_SESSION['errorMessage']; ?>
