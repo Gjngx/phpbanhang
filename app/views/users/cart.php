@@ -78,7 +78,7 @@
                             <h5>Tổng tiền</h5>
                             <h5 id="cart-total"><?= number_format($totalPrice, 0, ',', '.') . '₫'; ?></h5>
                         </div>
-                        <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Đặt hàng</button>
+                        <a class="btn btn-block btn-primary font-weight-bold my-3 py-3" href = "/phpbanhang/checkout">Đặt hàng</a>
                     </div>
                 </div>
             </div>

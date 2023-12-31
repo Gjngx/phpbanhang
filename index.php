@@ -5,7 +5,11 @@ require_once 'app/models/CatagoryModel.php';
 require_once 'app/models/ProductModel.php';
 require_once 'app/models/AdminModel.php';
 require_once 'app/models/RoleModel.php';
+<<<<<<< HEAD
 require_once 'app/models/UserModel.php';
+=======
+require_once 'app/models/OrdersModel.php';
+>>>>>>> 1a181bd857733a2c5ec96a5cee02a669f640db96
 // Yêu cầu thêm các file cần thiết khác
 
 $url = $_GET['url'] ?? '';
