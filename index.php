@@ -5,6 +5,7 @@ require_once 'app/models/CatagoryModel.php';
 require_once 'app/models/ProductModel.php';
 require_once 'app/models/AdminModel.php';
 require_once 'app/models/RoleModel.php';
+require_once 'app/models/OrdersModel.php';
 // Yêu cầu thêm các file cần thiết khác
 
 $url = $_GET['url'] ?? '';
