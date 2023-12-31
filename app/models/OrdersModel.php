@@ -9,6 +9,17 @@ class OrdersModel
         $this->conn = $db;
     }
 
+    public function getLastOrderId()
+    {
+        $query = "SELECT MAX(id) as lastOrderId FROM ". $this->table_name ;
+        $stmt = $this->conn->prepare($query);
+        if ($stmt->execute()) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row['lastOrderId'];
+        }
+        return null;
+    }
+
     public function createOrder($customerName, $email, $phone, $address, $createDate, $total, $status, $id_user)
     {
         // Kiểm tra đầu vào
@@ -20,7 +31,7 @@ class OrdersModel
             ];
         }
 
-        $query = "INSERT INTO " . $this->table_name . " (customerName, email, phone, address, createDate, total, status, id_user) ";
+        $query = "INSERT INTO " . $this->table_name . " (customerName, email, phone, address, createDate, total, status, id_user) VALUES (:customerName, :email, :phone, :address, :createDate, :total, :status, :id_user)";
         $stmt = $this->conn->prepare($query);
 
         // Làm sạch dữ liệu
@@ -35,15 +46,14 @@ class OrdersModel
 
 
         // Gán dữ liệu vào câu lệnh
-        $stmt->bindParam(':name', $customerName);
+        $stmt->bindParam(':customerName', $customerName);
         $stmt->bindParam(':email', $email);
-        $stmt->bindValue(':phone', $phone, );
+        $stmt->bindValue(':phone', $phone,);
         $stmt->bindParam(':address', $address);
         $stmt->bindParam(':createDate', $createDate);
         $stmt->bindParam(':total', $total);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':id_user', $id_user);
-
         // Thực thi câu lệnh
         if ($stmt->execute()) {
             return [
@@ -57,5 +67,28 @@ class OrdersModel
             'message' => 'Đã xảy ra lỗi khi thêm đơn hàng.'
         ];
     }
+    
+    public function createOrderProduct($orderId, $productId, $quantity)
+{
+    $query = "INSERT INTO orderProduct (id_order, id_product, amount) VALUES (:orderId, :productId, :quantity)";
+    $stmt = $this->conn->prepare($query);
+
+    $stmt->bindParam(':orderId', $orderId);
+    $stmt->bindParam(':productId', $productId);
+    $stmt->bindParam(':quantity', $quantity);
+
+    if ($stmt->execute()) {
+        return [
+            'success' => true,
+            'message' => 'Thông tin sản phẩm đã được thêm thành công.'
+        ];
+    }
+
+    return [
+        'success' => false,
+        'message' => 'Đã xảy ra lỗi khi thêm thông tin sản phẩm.'
+    ];
+}
+
 
 }

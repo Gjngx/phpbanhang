@@ -27,7 +27,13 @@
                                         </div>
 
                                         <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Đăng nhập vào tài khoản của bạn</h5>
-
+                                        <?php
+                                        if (isset($_SESSION['errorMessage']) && !empty($_SESSION['errorMessage'])) : ?>
+                                            <div class="alert alert-danger" role="alert">
+                                                <?php echo $_SESSION['errorMessage']; ?>
+                                            </div>
+                                            <?php unset($_SESSION['errorMessage']); ?>
+                                        <?php endif; ?>
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="username">Tài khoản</label>
                                             <input type="text" name="username" class="form-control form-control-lg" />

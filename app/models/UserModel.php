@@ -20,28 +20,54 @@ class UserModel
         return $result;
     }
 
-    public function registerUser($username, $password)
+    public function registerUser($username, $password, $email)
     {
-        // Kiểm tra xem username đã tồn tại hay chưa
+        // Kiểm tra đầu vào
+        if (empty($username) || empty($password)) {
+            // Trả về mảng thông báo lỗi
+            return [
+                'success' => false,
+                'message' => 'Vui lòng điền đầy đủ thông tin tài khoản.'
+            ];
+        }
+
         if ($this->getAccountByUsername($username)) {
-            echo "Tài khoản đã tồn tại.";
-            return false;
+            return [
+                'success' => false,
+                'message' => 'Tên tài khoản đã tồn tại.'
+            ];
         }
-
-        // Mã hóa mật khẩu
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Thực hiện lưu thông tin người dùng vào cơ sở dữ liệu
-        $query = "INSERT INTO users (username, password) VALUES (:username, :password)";
+        // Truy vấn tạo sản phẩm mới
+        $query = "INSERT INTO " . $this->table_name . " (username, password, email, name, phone, address) VALUES (:username, :password, :email, :name, :phone, :address)"; 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-        $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
 
+        // Làm sạch dữ liệu
+        $username = htmlspecialchars(strip_tags($username));
+        $password = htmlspecialchars(strip_tags($password));
+        $email = htmlspecialchars(strip_tags($email));
+        $name = '';
+        $phone = '';
+        $address = '';
+
+        // Gán dữ liệu vào câu lệnh
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':address', $address);
+
+        // Thực thi câu lệnh
         if ($stmt->execute()) {
-            return true;
-        } else {
-            echo "Đã xảy ra lỗi khi đăng ký tài khoản.";
-            return false;
+            return [
+                'success' => true,
+                'message' => 'Tài khoản đã được thêm thành công.'
+            ];
         }
+        // Trả về mảng thông báo lỗi
+        return [
+            'success' => false,
+            'message' => 'Đã xảy ra lỗi khi thêm tài khoản.'
+        ];
     }
 }

@@ -14,14 +14,18 @@
 
     <!-- Checkout Start -->
     <div class="container-fluid">
-        <div class="row px-xl-5">
-
+        <form method="POST" action="/phpbanhang/checkout/checkout">
+            <div class="row px-xl-5">
                 <div class="col-lg-8">
                     <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Địa
                             chỉ
                             giao hàng</span></h5>
                     <div class="bg-light p-30 mb-5">
-                    <form method="POST">
+                        <?php
+                        if (isset($_SESSION['errorMessage']) && !empty($_SESSION['errorMessage'])) : ?>
+                            <?php echo $_SESSION['errorMessage']; ?>
+                            <?php unset($_SESSION['errorMessage']); ?>
+                        <?php endif; ?>
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label>Tên khách hàng</label>
@@ -29,18 +33,18 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>E-mail</label>
-                                <input class="form-control" type="text" name= "email " placeholder="example@email.com">
+                                <input class="form-control" type="text" name="email" placeholder="example@email.com">
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>Số điện thoại</label>
-                                <input class="form-control" type="text" name= "phone " placeholder="+123 456 789">
+                                <input class="form-control" type="text" name="phone" placeholder="+123 456 789">
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>Địa chỉ</label>
-                                <input class="form-control" type="text" name = " address" placeholder="123 Street">
+                                <input class="form-control" type="text" name="address" placeholder="123 Street">
                             </div>
                         </div>
-                    </form>
+
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -56,7 +60,10 @@
                                 foreach ($cartProducts as $product) {
                                     $subtotal = $_SESSION['cart'][$product['id']] * $product['price'];
                                     $totalPrice += $subtotal
-                                        ?>
+                            ?>
+                                    <input type="hidden" name="products[<?= $product['id']; ?>][id]" value="<?= $product['id']; ?>">
+                                    <input type="hidden" name="products[<?= $product['id']; ?>][quantity]" value="<?= $_SESSION['cart'][$product['id']]; ?>">
+                                    <input type="hidden" name="total" value="<?= $totalPrice; ?>">
                                     <div class="d-flex justify-content-between">
                                         <p>
                                             <?= $product['name']; ?>
@@ -65,7 +72,7 @@
                                             <?= number_format($subtotal, 0, ',', '.') . ' ₫'; ?>
                                         </p>
                                     </div>
-                                    <?php
+                            <?php
                                 }
                             }
                             ?>
@@ -79,38 +86,17 @@
                                 </h6>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="mb-5">
-                        <h5 class="section-title position-relative text-uppercase mb-3"><span
-                                class="bg-secondary pr-3">Thanh toán</span></h5>
+                        <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Thanh toán</span></h5>
                         <div class="bg-light p-30">
-                            <div class="form-group">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                                    <label class="custom-control-label" for="paypal">Paypal</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                                    <label class="custom-control-label" for="directcheck">Direct Check</label>
-                                </div>
-                            </div>
-                            <div class="form-group mb-4">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                                    <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
-                                </div>
-                            </div>
-                            <a class="btn btn-block btn-primary font-weight-bold py-3"
-                                onclick="return confirm('Bạn có chắc chắn muốn đặt hàng?')">Xác nhận đặt hàng</a>
+                            <button type="submit" class="btn btn-block btn-primary font-weight-bold py-3" onclick="return confirm('Bạn có chắc chắn muốn đặt hàng?')">Xác nhận đặt hàng</button>
                         </div>
                     </div>
                 </div>
-
-        </div>
+            </div>
+        </form>
     </div>
     <!-- Checkout End -->
 
