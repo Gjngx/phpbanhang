@@ -13,4 +13,8 @@ class SessionHelper {
     public static function isMod() {
         return isset($_SESSION['user_idrole']) && $_SESSION['user_idrole'] === 2;
     }
+
+        public static function isLoggedInCustom() {
+        return isset($_SESSION['Customer_id']);
+    }
 }
