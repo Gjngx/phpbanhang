@@ -22,15 +22,6 @@ class UserModel
 
     public function registerUser($username, $password, $email)
     {
-        // Kiểm tra đầu vào
-        if (empty($username) || empty($password)) {
-            // Trả về mảng thông báo lỗi
-            return [
-                'success' => false,
-                'message' => 'Vui lòng điền đầy đủ thông tin tài khoản.'
-            ];
-        }
-
         if ($this->getAccountByUsername($username)) {
             return [
                 'success' => false,

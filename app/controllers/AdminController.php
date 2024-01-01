@@ -1,10 +1,11 @@
 <?php
-require_once ('app/helpers/SessionHelper.php');
+require_once('app/helpers/SessionHelper.php');
 class AdminController
 {
     private $authorModel;
     private $categoryModel;
     private $productsModel;
+    private $ordersModel;
     private $adminModel;
     private $roleModel;
     private $db;
@@ -12,6 +13,7 @@ class AdminController
     {
         $this->db = (new Database())->getConnection();
         $this->authorModel = new AuthorModel($this->db);
+        $this->ordersModel = new OrdersModel($this->db);
         $this->categoryModel = new CategoryModel($this->db);
         $this->productsModel = new ProductModel($this->db);
         $this->adminModel = new AdminModel($this->db);
@@ -103,7 +105,7 @@ class AdminController
                 exit();
             } else {
                 $_SESSION['errorMessage'] = $result['message'];
-                header('Location: /phpbanhang/admin/updateauthor/'.$id);
+                header('Location: /phpbanhang/admin/updateauthor/' . $id);
             }
         }
     }
@@ -204,7 +206,7 @@ class AdminController
             } else {
                 $_SESSION['errorMessage'] = $result['message'];
                 $category = $this->categoryModel->getCategoryById($id);
-                header('location: /phpbanhang/admin/updatecategory/'.$id);
+                header('location: /phpbanhang/admin/updatecategory/' . $id);
             }
         }
     }
@@ -337,15 +339,15 @@ class AdminController
                     exit();
                 } else {
                     $_SESSION['errorMessage'] = $result['message'];
-                    header('location: /phpbanhang/admin/updateproduct/'.$id);
+                    header('location: /phpbanhang/admin/updateproduct/' . $id);
                 }
             } else {
                 if (!in_array($imageExtension, $allowedExtensions)) {
                     $_SESSION['errorMessage'] = 'Chỉ cho phép tải lên các loại file ảnh (jpg, jpeg, png, gif)';
-                    header('location: /phpbanhang/admin/updateproduct/'.$id);
+                    header('location: /phpbanhang/admin/updateproduct/' . $id);
                 } elseif (file_exists($uploadDirectory)) {
                     $_SESSION['errorMessage'] = 'Tên ảnh đã tồn tại!';
-                    header('location: /phpbanhang/admin/updateproduct/'.$id);
+                    header('location: /phpbanhang/admin/updateproduct/' . $id);
                 } elseif (move_uploaded_file($imageTemp, $uploadDirectory)) {
                     $result =  $this->productsModel->updateProduct($id, $name, $image, $price, $description, $status, $id_author, $id_category);
                     if ($result['success']) {
@@ -353,11 +355,11 @@ class AdminController
                         exit();
                     } else {
                         $_SESSION['errorMessage'] = $result['message'];
-                        header('location: /phpbanhang/admin/updateproduct/'.$id);
+                        header('location: /phpbanhang/admin/updateproduct/' . $id);
                     }
                 } else {
                     $_SESSION['errorMessage'] = 'Lỗi tải lên ảnh!';
-                    header('location: /phpbanhang/admin/updateproduct/'.$id);
+                    header('location: /phpbanhang/admin/updateproduct/' . $id);
                 }
             }
         }
@@ -412,14 +414,21 @@ class AdminController
             header('Location: /phpbanhang/admin');
             exit;
         }
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = htmlspecialchars(strip_tags($_POST['username'] ?? ''));
             $password = htmlspecialchars(strip_tags($_POST['password'] ?? ''));
             $email = htmlspecialchars(strip_tags($_POST['email'] ?? ''));
             $id_role = htmlspecialchars(strip_tags($_POST['id_role'] ?? ''));
 
-            $hashpassword = password_hash($password, PASSWORD_DEFAULT);
+            // Kiểm tra mật khẩu có đủ độ dài và chứa ít nhất 1 chữ hoa và 1 số
+            if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
+                $_SESSION['errorMessage'] = "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 số.";
+                header('location: /phpbanhang/admin/createadmin');
+                exit();
+            }
 
+            $hashpassword = password_hash($password, PASSWORD_DEFAULT);
 
             $result = $this->adminModel->signin($username, $hashpassword, $email, $id_role);
 
@@ -433,6 +442,7 @@ class AdminController
             }
         }
     }
+
     public function updateadmin($id)
     {
         if (!SessionHelper::isAdmin()) {
@@ -462,7 +472,7 @@ class AdminController
                 exit();
             } else {
                 $_SESSION['errorMessage'] = $result['message'];
-                header('Location: /phpbanhang/admin/updateadmin/'.$id);
+                header('Location: /phpbanhang/admin/updateadmin/' . $id);
             }
         }
     }
@@ -480,6 +490,169 @@ class AdminController
         } else {
             $_SESSION['errorMessage'] = $result['message'];
             header('Location: /phpbanhang/admin/accountadmin');
+            exit();
+        }
+    }
+    public function orders()
+    {
+        if (!SessionHelper::isAdmin() && !SessionHelper::isMod()) {
+            header('Location: /phpbanhang/loginadmin');
+            exit;
+        }
+        $limit = 10;
+        $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+        $offset = ($currentPage - 1) * $limit;
+        $totalOrder = $this->ordersModel->getTotalOrders();
+        $totalPages = ceil($totalOrder / $limit);
+        $orders = $this->ordersModel->getAllOders($limit, $offset);
+        include_once 'app/views/admin/order/order.php';
+    }
+    public function updateorder($id)
+    {
+        if (!SessionHelper::isAdmin() && !SessionHelper::isMod()) {
+            header('Location: /phpbanhang/loginadmin');
+            exit;
+        }
+        $orderProducts = $this->ordersModel->getProductsByOrders($id);
+        $order = $this->ordersModel->getOdersById($id);
+        include_once 'app/views/admin/order/update.php';
+    }
+    public function saveupdateorder($id)
+    {
+        if (!SessionHelper::isAdmin() && !SessionHelper::isMod()) {
+            header('Location: /phpbanhang/loginadmin');
+            exit;
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $status = htmlspecialchars(strip_tags($_POST['status'] ?? ''));
+
+            $result = $this->ordersModel->updateOrder($id, $status);
+
+            if ($result['success']) {
+                $_SESSION['successMessage'] = $result['message'];
+                header('Location: /phpbanhang/admin/orders');
+                exit();
+            } else {
+                $_SESSION['errorMessage'] = $result['message'];
+                header('Location: /phpbanhang/admin/updateorder/' . $id);
+            }
+        }
+    }
+    public function profile($id)
+    {
+        if (!SessionHelper::isAdmin() && !SessionHelper::isMod()) {
+            header('Location: /phpbanhang/loginadmin');
+            exit;
+        }
+        $admin = $this->adminModel->getAdminRoleById($id);
+        include_once 'app/views/admin/profile/profile.php';
+    }
+    public function saveupdateprofile($id)
+    {
+        if (!SessionHelper::isAdmin() && !SessionHelper::isMod()) {
+            header('Location: /phpbanhang/loginadmin');
+            exit;
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = htmlspecialchars(strip_tags($_POST['email'] ?? ''));
+            if (empty($email)) {
+                $_SESSION['errorMessage'] = "Vui lòng điền email!";
+                header('Location: /phpbanhang/admin/profile/' . $id);
+                exit();
+            }
+            $result = $this->adminModel->updateAdmin($id, $email);
+
+            if ($result['success']) {
+                $_SESSION['successMessage'] = $result['message'];
+                header('Location: /phpbanhang/admin/profile/' . $id);
+                exit();
+            } else {
+                $_SESSION['errorMessage'] = $result['message'];
+                header('Location: /phpbanhang/admin/profile/' . $id);
+            }
+        }
+    }
+    public function updatepasswordprofile($id)
+    {
+        if (!SessionHelper::isAdmin() && !SessionHelper::isMod()) {
+            header('Location: /phpbanhang/loginadmin');
+            exit;
+        }
+        $admin = $this->adminModel->getAdminRoleById($id);
+        include_once 'app/views/admin/profile/updatepassword.php';
+    }
+    public function saveupdatepasswordprofile($id)
+    {
+        if (!SessionHelper::isAdmin() && !SessionHelper::isMod()) {
+            header('Location: /phpbanhang/loginadmin');
+            exit;
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            
+            $password = htmlspecialchars(strip_tags($_POST['password'] ?? ''));
+            $confirmpassword = htmlspecialchars(strip_tags($_POST['confirmpassword'] ?? ''));
+            $newpassword = htmlspecialchars(strip_tags($_POST['newpassword'] ?? ''));
+            $username = htmlspecialchars(strip_tags($_POST['username'] ?? ''));
+
+
+            if (empty($password) || empty($confirmpassword) || empty($newpassword)) {
+                $_SESSION['errorMessage'] = "Vui lòng điền đầy đủ thông tin!";
+                header('Location: /phpbanhang/admin/updatepasswordprofile/' . $id);
+                exit();
+            }
+            if ($password !== $confirmpassword){
+                $_SESSION['errorMessage'] = "Mật khẩu và mật nhập lại không trùng khớp!";
+                header('Location: /phpbanhang/admin/updatepasswordprofile/' . $id);
+                exit();
+            }
+            if (!$this->isPasswordStrongEnough($newpassword)) {
+                $_SESSION['errorMessage'] = "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 số.";
+                header('Location: /phpbanhang/admin/updatepasswordprofile/' . $id);
+                exit();
+            }
+            $account = $this->adminModel->getAccountByUsername($username);
+            if ($account) {
+                $pwd_hashed = $account->password;
+                if (password_verify($password, $pwd_hashed)) {
+                    $hashpassword = password_hash($newpassword, PASSWORD_DEFAULT);
+                    $result = $this->adminModel->updatePasswordAdmin($id, $hashpassword);
+                    if ($result['success']) {
+                        $_SESSION['successMessage'] = $result['message'];
+                        header('Location: /phpbanhang/admin/updatepasswordprofile/' . $id);
+                        exit();
+                    } else {
+                        $_SESSION['errorMessage'] = $result['message'];
+                        header('Location: /phpbanhang/admin/updatepasswordprofile/' . $id);
+                    }
+                } else {
+                    $_SESSION['errorMessage'] = "Nhập sai mật khẩu.";
+                    header('Location: /phpbanhang/admin/updatepasswordprofile/' . $id);
+                }
+            } else {
+                $_SESSION['errorMessage'] = "Đã xảy ra lỗi khi cập nhật mật khẩu.";
+                header('Location: /phpbanhang/admin/updatepasswordprofile/' . $id);
+            }
+        }
+    }
+    private function isPasswordStrongEnough($password)
+    {
+        return strlen($password) >= 8 && preg_match('/[A-Z]/', $password) && preg_match('/[0-9]/', $password);
+    }
+    public function deleteorder($id)
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /phpbanhang/loginadmin');
+            exit;
+        }
+        $result = $this->ordersModel->deleteOrder($id);
+        if ($result['success']) {
+            $_SESSION['successMessage'] = $result['message'];
+            header('Location: /phpbanhang/admin/orders');
+            exit();
+        } else {
+
+            $_SESSION['errorMessage'] = $result['message'];
+            header('Location: /phpbanhang/admin/orders');
             exit();
         }
     }

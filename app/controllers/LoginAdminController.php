@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 class LoginAdminController
 {
     private $adminModel;
@@ -17,7 +17,7 @@ class LoginAdminController
     }
     public function checkLogin()
     {
-        // Kiểm tra xem liệu form đã được submit
+        session_start();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
@@ -41,11 +41,11 @@ class LoginAdminController
                         header('Location: /phpbanhang/admin');
                         exit;
                     } else {
-                        $_SESSION['errorMessage'] = "Sai mật khẩu!";
+                        $_SESSION['errorMessage'] = "Đăng nhập không thành công.";
                         header('Location: /phpbanhang/loginadmin');
                     }
                 } else {
-                    $_SESSION['errorMessage'] = "Tài khoản không tồn tại!";
+                    $_SESSION['errorMessage'] = "Đăng nhập không thành công.";
                     header('Location: /phpbanhang/loginadmin');
                 }
             }
@@ -53,11 +53,10 @@ class LoginAdminController
     }
     public function logout()
     {
-
-        $_SESSION = array();
-
-        session_destroy();
-
+        session_start();
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_idrole']);
+        unset($_SESSION['username']);
         header("Location: /phpbanhang/loginadmin");
         exit();
     }

@@ -24,7 +24,7 @@
                             <h5 class="card-title fw-semibold mb-4">Cập nhật sách</h5>
                             <div class="card">
                                 <div class="card-body">
-                                    <?php 
+                                    <?php
                                     if (isset($_SESSION['errorMessage']) && !empty($_SESSION['errorMessage'])) : ?>
                                         <div class="alert alert-danger" role="alert">
                                             <?php echo $_SESSION['errorMessage']; ?>
@@ -74,8 +74,8 @@
                                         <div class="mb-3">
                                             <label class="form-label">Trạng thái</label>
                                             <select class="form-control" id="status" name="status">
-                                                <option value="1">Còn bán</option>
-                                                <option value="0">Hết bán</option>
+                                                <option value="1" <?php echo ($product["status"] == 1) ? 'selected' : ''; ?>>Còn bán</option>
+                                                <option value="0" <?php echo ($product["status"] == 0) ? 'selected' : ''; ?>>Hết bán</option>
                                             </select>
                                         </div>
                                         <div class="d-flex justify-content-end">

@@ -23,6 +23,21 @@ class AdminModel
         return $stmt;
     }
 
+    public function getAdminRoleById($id)
+    {
+        $query = "SELECT a.*, r.name AS roleName
+        FROM admins a
+        JOIN roles r ON a.id_role = r.id
+        WHERE a.id = :id ";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
     public function getAdminById($id)
     {
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
@@ -37,7 +52,8 @@ class AdminModel
 
         return $result;
     }
-    private function isUserExistsUsername($username) {
+    private function isUserExistsUsername($username)
+    {
         $query = "SELECT id FROM " . $this->table_name . " WHERE username = :username";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':username', $username);
@@ -45,7 +61,8 @@ class AdminModel
 
         return $stmt->rowCount() > 0;
     }
-    private function isUserExistsEmail($email) {
+    private function isUserExistsEmail($email)
+    {
         $query = "SELECT id FROM " . $this->table_name . " WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
@@ -86,9 +103,9 @@ class AdminModel
                 'message' => 'Tên email đã tồn tại.'
             ];
         }
-        
+
         // Truy vấn tạo sản phẩm mới
-        $query = "INSERT INTO " . $this->table_name . " (username, password, email, id_role) VALUES (:username, :password, :email, :id_role)"; 
+        $query = "INSERT INTO " . $this->table_name . " (username, password, email, id_role) VALUES (:username, :password, :email, :id_role)";
         $stmt = $this->conn->prepare($query);
 
         // Làm sạch dữ liệu
@@ -128,9 +145,9 @@ class AdminModel
                 'message' => 'Vui lòng chọn quyền cho tài khoản.'
             ];
         }
-        
+
         // Truy vấn tạo sản phẩm mới
-        $query = "UPDATE " . $this->table_name ." SET `id_role`=:id_role WHERE id=:id"; 
+        $query = "UPDATE " . $this->table_name . " SET `id_role`=:id_role WHERE id=:id";
         $stmt = $this->conn->prepare($query);
 
         // Gán dữ liệu vào câu lệnh
@@ -172,6 +189,54 @@ class AdminModel
         return [
             'success' => false,
             'message' => 'Đã xảy ra lỗi khi xóa tài khoản.'
+        ];
+    }
+    public function updateAdmin($id, $email)
+    {
+
+        $query = "UPDATE " . $this->table_name . " SET `email`=:email WHERE id=:id";
+        $stmt = $this->conn->prepare($query);
+
+        // Gán dữ liệu vào câu lệnh
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':email', $email);
+
+        // Thực thi câu lệnh
+        if ($stmt->execute()) {
+            return [
+                'success' => true,
+                'message' => 'Email cập nhật thành công.'
+            ];
+        }
+
+        // Trả về mảng thông báo lỗi
+        return [
+            'success' => false,
+            'message' => 'Đã xảy ra lỗi khi cập nhật email.'
+        ];
+    }
+    public function updatePasswordAdmin($id, $password)
+    {
+
+        $query = "UPDATE " . $this->table_name . " SET `password`=:password WHERE id=:id";
+        $stmt = $this->conn->prepare($query);
+
+        // Gán dữ liệu vào câu lệnh
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':password', $password);
+
+        // Thực thi câu lệnh
+        if ($stmt->execute()) {
+            return [
+                'success' => true,
+                'message' => 'Mật khẩu cập nhật thành công.'
+            ];
+        }
+
+        // Trả về mảng thông báo lỗi
+        return [
+            'success' => false,
+            'message' => 'Đã xảy ra lỗi khi cập nhật mật khẩu.'
         ];
     }
 }

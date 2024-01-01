@@ -45,11 +45,11 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Mật khẩu</label>
-                                            <input type="text" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu">
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Email</label>
-                                            <input type="text" class="form-control" id="email" name="email" placeholder="Nhập email">
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Quyền</label>

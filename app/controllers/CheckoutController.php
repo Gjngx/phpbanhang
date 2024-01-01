@@ -27,7 +27,6 @@ class CheckoutController
     public function checkout()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            session_start();
             // Làm sạch và kiểm tra dữ liệu đầu vào         
             $customerName = htmlspecialchars(strip_tags($_POST['customerName'] ?? ''));
             $email = htmlspecialchars(strip_tags($_POST['email'] ?? ''));

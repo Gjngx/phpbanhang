@@ -15,7 +15,6 @@ class ProductModel
               JOIN categories c ON p.id_category = c.id
               JOIN authors a ON p.id_author = a.id
               LIMIT :limit OFFSET :offset";
-
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -61,7 +60,7 @@ class ProductModel
         $name = '%' . htmlspecialchars(strip_tags($name)) . '%';
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->execute();
-    
+
         return $stmt;
     }
     public function getProductById($id)
@@ -86,7 +85,7 @@ class ProductModel
     }
     public function getTotalProductsByCategory($id)
     {
-        $query = "SELECT COUNT(*) as total FROM " . $this->table_name. " WHERE id_category = :id";
+        $query = "SELECT COUNT(*) as total FROM " . $this->table_name . " WHERE id_category = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -150,7 +149,8 @@ class ProductModel
         return $stmt;
     }
 
-    private function isProductExists($name) {
+    private function isProductExists($name)
+    {
         $query = "SELECT id FROM " . $this->table_name . " WHERE name = :name";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $name);
