@@ -24,6 +24,28 @@ class CheckoutController
         }
     }
 
+    public function listorders()
+    {
+        if (!SessionHelper::isLoggedInCustom()) {
+            header('Location: /phpbanhang/user/login');
+            exit;
+        }
+        $id = $_SESSION['customer_id'];
+        $orders = $this->ordersModel->getOdersByIdUser($id);
+        include_once 'app/views/users/listorder.php';
+    }
+
+    public function detailorder($id)
+    {
+        if (!SessionHelper::isLoggedInCustom()) {
+            header('Location: /phpbanhang/user/login');
+            exit;
+        }
+        $orderProducts = $this->ordersModel->getProductsByOrders($id);
+        $order = $this->ordersModel->getOdersById($id);
+        include_once 'app/views/users/detailorder.php';
+    }
+
     public function checkout()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -36,7 +58,18 @@ class CheckoutController
             $status = "1";
             $address = htmlspecialchars(strip_tags($_POST['address'] ?? ''));
             $id_user = $_SESSION['customer_id'];
+            
+            if (empty($customerName) || empty($email) || empty($phone) || empty($address)) {
+                $_SESSION['errorMessage'] = "Vui lòng điền đầy đủ thông tin.";
+                header('location: /phpbanhang/checkout');
+                exit();
+            }
             // Kiểm tra xác thực và phân quyền ở đây nếu cần
+            if (!preg_match('/(84|0[3|5|7|8|9])+([0-9]{8})\b/', $phone)) {
+                $_SESSION['errorMessage'] = "Số điện thoại không hợp lệ.";
+                header('location: /phpbanhang/checkout');
+                exit();
+            }
             // Thử tạo sản phẩm mới
             $result = $this->ordersModel->createOrder($customerName, $email, $phone, $address, $createDate, $total, $status, $id_user);
             if ($result['success']) {

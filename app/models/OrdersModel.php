@@ -33,6 +33,17 @@ class OrdersModel
         return $results;
     }
 
+    public function getOdersByIdUser($id)
+    {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id_user = :id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt;
+    }
+
     public function getTotalOrders()
     {
         $query = "SELECT COUNT(*) as total FROM " . $this->table_name;
@@ -67,14 +78,6 @@ class OrdersModel
 
     public function createOrder($customerName, $email, $phone, $address, $createDate, $total, $status, $id_user)
     {
-        // Kiểm tra đầu vào
-        if (empty($customerName) || empty($email) || empty($phone) || empty($address) || empty($createDate) || empty($total) || empty($status) || empty($id_user)) {
-            // Trả về mảng thông báo lỗi
-            return [
-                'success' => false,
-                'message' => 'Vui lòng điền đầy đủ thông tin đơn hàng.'
-            ];
-        }
 
         $query = "INSERT INTO " . $this->table_name . " (customerName, email, phone, address, createDate, total, status, id_user) VALUES (:customerName, :email, :phone, :address, :createDate, :total, :status, :id_user)";
         $stmt = $this->conn->prepare($query);

@@ -1,5 +1,4 @@
 <?php
-
 $this->db = (new Database())->getConnection();
 $this->categoryModel = new CategoryModel($this->db);
 $categories = $this->categoryModel->getCategories()->fetchAll(PDO::FETCH_ASSOC);
@@ -58,6 +57,7 @@ $categories = $this->categoryModel->getCategories()->fetchAll(PDO::FETCH_ASSOC);
                     <div class="navbar-nav mr-auto py-0">
                         <a href="/phpbanhang" class="nav-item nav-link">Trang chủ</a>
                         <a href="/phpbanhang/product" class="nav-item nav-link">Sách</a>
+                        <a href="/phpbanhang/checkout/listorders" class="nav-item nav-link">Đơn hàng</a>
                         <a href="/phpbanhang/contact" class="nav-item nav-link">Liên hệ</a>
                     </div>
                     <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
