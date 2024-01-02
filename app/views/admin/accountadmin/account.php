@@ -31,14 +31,14 @@
                     Thêm admin mới
                   </a>
                 </div>
-                <?php 
+                <?php
                 if (isset($_SESSION['successMessage']) && !empty($_SESSION['successMessage'])) : ?>
                   <div class="alert alert-success" role="alert">
                     <?php echo $_SESSION['successMessage']; ?>
                   </div>
                   <?php unset($_SESSION['successMessage']); ?>
                 <?php endif; ?>
-                <?php 
+                <?php
                 if (isset($_SESSION['errorMessage']) && !empty($_SESSION['errorMessage'])) : ?>
                   <div class="alert alert-danger" role="alert">
                     <?php echo $_SESSION['errorMessage']; ?>
@@ -67,7 +67,9 @@
                           <td><?php echo $row['roleName'] ?></td>
                           <td>
                             <a href="/phpbanhang/admin/updateadmin/<?php echo $row['id']; ?>" class="btn btn-warning">Cập nhật</a>
-                            <a href="/phpbanhang/admin/deleteadmin/<?php echo $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có chắc xóa tài khoản <?php echo $row['username'] ?> không?')">Xóa tài khoản</a>
+                            <?php if ($_SESSION['user_id'] !== $row['id']) : ?>
+                              <a href="/phpbanhang/admin/deleteadmin/<?php echo $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có chắc xóa tài khoản <?php echo $row['username'] ?> không?')">Xóa tài khoản</a>
+                            <?php endif; ?>
                           </td>
                         </tr>
                       <?php

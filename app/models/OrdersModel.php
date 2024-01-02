@@ -11,7 +11,7 @@ class OrdersModel
 
     public function getAllOders($limit, $offset)
     {
-        $query = "SELECT * FROM " . $this->table_name . " LIMIT :limit OFFSET :offset";
+        $query = "SELECT * FROM " . $this->table_name . " ORDER BY createDate DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -35,7 +35,7 @@ class OrdersModel
 
     public function getOdersByIdUser($id)
     {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id_user = :id";
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id_user = :id ORDER BY createDate DESC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
