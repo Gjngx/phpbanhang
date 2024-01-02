@@ -10,6 +10,21 @@ class UserModel
         $this->conn = $db;
     }
 
+    public function getUserById($id)
+    {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
     public function getAccountByUsername($username)
     {
         $query = "SELECT * FROM users WHERE username = :username";
@@ -59,6 +74,34 @@ class UserModel
         return [
             'success' => false,
             'message' => 'Đã xảy ra lỗi khi thêm tài khoản.'
+        ];
+    }
+
+    public function updateUser($id, $name, $phone, $email, $address)
+    {
+
+        $query = "UPDATE " . $this->table_name . " SET `name`=:name, `phone`=:phone, `email`=:email, `address`=:address WHERE id=:id";
+        $stmt = $this->conn->prepare($query);
+
+        // Gán dữ liệu vào câu lệnh
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':address', $address);
+
+        // Thực thi câu lệnh
+        if ($stmt->execute()) {
+            return [
+                'success' => true,
+                'message' => 'Cập nhật thông tin thành công.'
+            ];
+        }
+
+        // Trả về mảng thông báo lỗi
+        return [
+            'success' => false,
+            'message' => 'Đã xảy ra lỗi khi cập nhật thông tin.'
         ];
     }
 }

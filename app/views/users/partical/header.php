@@ -1,4 +1,5 @@
 <?php
+
 $this->db = (new Database())->getConnection();
 $this->categoryModel = new CategoryModel($this->db);
 $categories = $this->categoryModel->getCategories()->fetchAll(PDO::FETCH_ASSOC);
@@ -65,7 +66,7 @@ $categories = $this->categoryModel->getCategories()->fetchAll(PDO::FETCH_ASSOC);
                         </a>
                         
                         <?php if (isset($_SESSION['customer_id'])) : ?> 
-                            <a href='/phpbanhang/user/info' class='btn px-0 ml-3'><i class='fa-solid fa-user text-primary'></i></a>
+                            <a href='/phpbanhang/user/userinfo/<?= $_SESSION['customer_id'] ?>' class='btn px-0 ml-3'><i class='fa-solid fa-user text-primary'></i></a>
                             <a href='/phpbanhang/user/logout' class='btn px-0 ml-3'><i class='fa-solid fa-right-from-bracket text-primary'></i></a>
                         <?php else :?>
                             <a href='/phpbanhang/user/login'><i class='fa-solid fa-right-to-bracket text-primary'></i></a>

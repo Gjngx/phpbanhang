@@ -1,4 +1,5 @@
 <?php
+require_once('app/helpers/SessionHelper.php');
 class UserController
 {
     private $userModel;
@@ -16,10 +17,50 @@ class UserController
     {
         include_once 'app/views/users/register.php';
     }
-    public function userinfo()
+    public function userinfo($id)
     {
-        include_once 'app/views/users/info.php';
+        if (!SessionHelper::isLoggedInCustom()) {
+            header('Location: /phpbanhang/user/login');
+            exit;
+        }
+        $user = $this->userModel->getUserById($id);
+        include_once 'app/views/users/profile.php';
     }
+
+    public function saveupdateuserinfo($id)
+    {
+        if (!SessionHelper::isLoggedInCustom()) {
+            header('Location: /phpbanhang/user/login');
+            exit;
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $name = htmlspecialchars(strip_tags($_POST['name'] ?? ''));
+            $phone = htmlspecialchars(strip_tags($_POST['phone'] ?? ''));
+            $email = htmlspecialchars(strip_tags($_POST['email'] ?? ''));
+            $address = htmlspecialchars(strip_tags($_POST['address'] ?? ''));
+            if (empty($name) || empty($phone) || empty($email) || empty($address)) {
+                $_SESSION['errorMessage'] = "Vui lòng điền đầy đủ thông tin khách hàng!";
+                header('Location: /phpbanhang/user/userinfo/' . $id);
+                exit();
+            }
+            if (!preg_match('/(84|0[3|5|7|8|9])+([0-9]{8})\b/', $phone)) {
+                $_SESSION['errorMessage'] = "Số điện thoại không hợp lệ.";
+                header('Location: /phpbanhang/user/userinfo/' . $id);
+                exit();
+            }
+            $result = $this->userModel->updateUser($id, $name, $phone, $email, $address);
+
+            if ($result['success']) {
+                $_SESSION['successMessage'] = $result['message'];
+                header('Location: /phpbanhang/user/userinfo/' . $id);
+                exit();
+            } else {
+                $_SESSION['errorMessage'] = $result['message'];
+                header('Location: /phpbanhang/user/userinfo/' . $id);
+            }
+        }
+    }
+
     public function checkLogin()
     {
         session_start();
