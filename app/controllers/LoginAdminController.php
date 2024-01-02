@@ -21,7 +21,7 @@ class LoginAdminController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
-
+            session_start();
             if (empty($username)) {
                 $_SESSION['errorMessage'] = "Vui lòng điền tài khoản!";
                 header('Location: /phpbanhang/loginadmin');
@@ -30,8 +30,8 @@ class LoginAdminController
                 header('Location: /phpbanhang/loginadmin');
             } else {
                 $account = $this->adminModel->getAccountByUsername($username);
-
                 if ($account) {
+                    session_start();
                     $pwd_hashed = $account->password;
                     if (password_verify($password, $pwd_hashed)) {
                         $_SESSION['user_id'] = $account->id;
