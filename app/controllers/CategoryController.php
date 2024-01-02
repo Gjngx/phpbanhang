@@ -8,9 +8,9 @@ class CategoryController {
         $this->productsModel = new ProductModel($this->db);
     }
     public function product($id) {
+        session_start();
         $limit = 12;
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
-
         $offset = ($currentPage - 1) * $limit;
         $totalPropucts = $this->productsModel->getTotalProductsByCategory($id);
         $totalPages = ceil($totalPropucts / $limit);

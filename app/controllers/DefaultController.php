@@ -9,6 +9,7 @@ class DefaultController {
     }
     public function index() {
         $products = $this->productsModel-> getNewestProducts();
+        session_start();
         include_once 'app/views/users/index.php';
     }
 }

@@ -15,9 +15,9 @@ class ProductController
     }
     public function index()
     {
+        session_start();
         $limit = 12;
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
-
         $offset = ($currentPage - 1) * $limit;
         $totalPropucts = $this->productsModel->getTotalProducts();
         $totalPages = ceil($totalPropucts / $limit);
@@ -26,15 +26,16 @@ class ProductController
     }
     public function detail($id)
     {
+        session_start();
         $product = $this->productsModel->getProductById($id);
         $products = $this->productsModel->getRandomProducts();
         include_once 'app/views/users/product/detail.php';
     }
     public function craetedateordersortbyasc()
     {
+        session_start();
         $limit = 12;
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
-
         $offset = ($currentPage - 1) * $limit;
         $totalPropucts = $this->productsModel->getTotalProducts();
         $totalPages = ceil($totalPropucts / $limit);
@@ -43,9 +44,9 @@ class ProductController
     }
     public function priceordersortbyasc()
     {
+        session_start();
         $limit = 12;
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
-
         $offset = ($currentPage - 1) * $limit;
         $totalPropucts = $this->productsModel->getTotalProducts();
         $totalPages = ceil($totalPropucts / $limit);
@@ -54,9 +55,9 @@ class ProductController
     }
     public function priceorderdecbydecs()
     {
+        session_start();
         $limit = 12;
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
-
         $offset = ($currentPage - 1) * $limit;
         $totalPropucts = $this->productsModel->getTotalProducts();
         $totalPages = ceil($totalPropucts / $limit);
@@ -71,9 +72,11 @@ class ProductController
         // $offset = ($currentPage - 1) * $limit;
         // $totalPropucts = $this->productsModel->getTotalProducts();
         // $totalPages = ceil($totalPropucts / $limit);
+        session_start();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = htmlspecialchars(strip_tags($_POST['name'] ?? ''));
             $products = $this->productsModel->getProductsByName($name);
+            
             include_once 'app/views/users/product/index.php';
         }
     }

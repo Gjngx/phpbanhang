@@ -21,7 +21,11 @@ class CheckoutController
             $idProducts = array_keys($_SESSION['cart']);
             $cartProducts = $this->productsModel->getProductsByIds($idProducts);
             include_once 'app/views/users/checkout.php';
+        }else{
+            header('Location: /phpbanhang/product/viewcart');
+            exit;
         }
+
     }
 
     public function listorders()

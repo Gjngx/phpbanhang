@@ -13,11 +13,11 @@ class LoginAdminController
     }
     public function index()
     {
+        session_start();
         include_once 'app/views/admin/login.php';
     }
     public function checkLogin()
     {
-        session_start();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
@@ -53,7 +53,6 @@ class LoginAdminController
     }
     public function logout()
     {
-        session_start();
         unset($_SESSION['user_id']);
         unset($_SESSION['user_idrole']);
         unset($_SESSION['username']);
