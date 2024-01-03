@@ -80,7 +80,9 @@
                           <td><?php echo ($row['status'] == 1) ? 'Còn hàng' : 'Hết hàng'; ?></td>
                           <td>
                             <a href="/phpbanhang/admin/updateproduct/<?php echo $row['id']; ?>" class="btn mb-1 btn-warning">Cập nhật</a>
+                            <?php if (isset($_SESSION['user_idrole']) && $_SESSION['user_idrole'] === 1) : ?>
                             <a href="/phpbanhang/admin/deleteproduct/<?php echo $row['id']; ?>" class="btn mb-1 btn-danger" onclick="return confirm('Bạn có chắc xóa sách <?php echo $row['name'] ?> không?')">Xóa sách</a>
+                            <?php endif; ?>
                           </td>
                         </tr>
                       <?php

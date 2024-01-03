@@ -31,14 +31,14 @@
                     Thêm mới tác giả
                   </a>
                 </div>
-                <?php 
+                <?php
                 if (isset($_SESSION['successMessage']) && !empty($_SESSION['successMessage'])) : ?>
                   <div class="alert alert-success" role="alert">
                     <?php echo $_SESSION['successMessage']; ?>
                   </div>
                   <?php unset($_SESSION['successMessage']); ?>
                 <?php endif; ?>
-                <?php 
+                <?php
                 if (isset($_SESSION['errorMessage']) && !empty($_SESSION['errorMessage'])) : ?>
                   <div class="alert alert-danger" role="alert">
                     <?php echo $_SESSION['errorMessage']; ?>
@@ -63,7 +63,9 @@
                           <td><?php echo $row['name'] ?></td>
                           <td>
                             <a href="/phpbanhang/admin/updateauthor/<?php echo $row['id']; ?>" class="btn btn-warning">Cập nhật</a>
-                            <a href="/phpbanhang/admin/deleteauthor/<?php echo $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Xóa tác giả <?php echo $row['name'] ?> thì toàn bộ sách thuộc tác giả <?php echo $row['name'] ?> sẽ bị xóa! Bạn có chắc xóa tác giả <?php echo $row['name'] ?> không?')">Xóa tác giả</a>
+                            <?php if (isset($_SESSION['user_idrole']) && $_SESSION['user_idrole'] === 1) : ?>
+                              <a href="/phpbanhang/admin/deleteauthor/<?php echo $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Xóa tác giả <?php echo $row['name'] ?> thì toàn bộ sách thuộc tác giả <?php echo $row['name'] ?> sẽ bị xóa! Bạn có chắc xóa tác giả <?php echo $row['name'] ?> không?')">Xóa tác giả</a>
+                            <?php endif; ?>
                           </td>
                         </tr>
                       <?php
