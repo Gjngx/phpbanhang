@@ -277,10 +277,12 @@ class AdminController
             if (empty($image) || empty($imageTemp)) {
                 $_SESSION['errorMessage'] = 'Vui lòng chọn ảnh';
                 header('location: /phpbanhang/admin/createproduct');
+                exit();
             } else {
                 if (file_exists($uploadDirectory)) {
                     $_SESSION['errorMessage'] = 'Tên ảnh đã tồn tại!';
                     header('location: /phpbanhang/admin/createproduct');
+                    exit();
                 } elseif (move_uploaded_file($imageTemp, $uploadDirectory)) {
                     $result = $this->productsModel->createProduct($name, $price, $image, $description, $createDate, $status, $id_author, $id_category);
 
@@ -291,10 +293,12 @@ class AdminController
                     } else {
                         $_SESSION['errorMessage'] = $result['message'];
                         header('location: /phpbanhang/admin/createproduct');
+                        exit();
                     }
                 } else {
                     $_SESSION['errorMessage'] = 'Lỗi tải lên ảnh!';
                     header('location: /phpbanhang/admin/createproduct');
+                    exit();
                 }
             }
         }
@@ -340,14 +344,17 @@ class AdminController
                 } else {
                     $_SESSION['errorMessage'] = $result['message'];
                     header('location: /phpbanhang/admin/updateproduct/' . $id);
+                    exit();
                 }
             } else {
                 if (!in_array($imageExtension, $allowedExtensions)) {
                     $_SESSION['errorMessage'] = 'Chỉ cho phép tải lên các loại file ảnh (jpg, jpeg, png, gif)';
                     header('location: /phpbanhang/admin/updateproduct/' . $id);
+                    exit();
                 } elseif (file_exists($uploadDirectory)) {
                     $_SESSION['errorMessage'] = 'Tên ảnh đã tồn tại!';
                     header('location: /phpbanhang/admin/updateproduct/' . $id);
+                    exit();
                 } elseif (move_uploaded_file($imageTemp, $uploadDirectory)) {
                     $result =  $this->productsModel->updateProduct($id, $name, $image, $price, $description, $status, $id_author, $id_category);
                     if ($result['success']) {
@@ -356,10 +363,12 @@ class AdminController
                     } else {
                         $_SESSION['errorMessage'] = $result['message'];
                         header('location: /phpbanhang/admin/updateproduct/' . $id);
+                        exit();
                     }
                 } else {
                     $_SESSION['errorMessage'] = 'Lỗi tải lên ảnh!';
                     header('location: /phpbanhang/admin/updateproduct/' . $id);
+                    exit();
                 }
             }
         }
