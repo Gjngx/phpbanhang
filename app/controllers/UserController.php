@@ -11,12 +11,10 @@ class UserController
     }
     public function login()
     {
-        session_start();
         include_once 'app/views/users/login.php';
     }
     public function register()
     {
-        session_start();
         include_once 'app/views/users/register.php';
     }
     public function userinfo($id)
@@ -25,7 +23,6 @@ class UserController
             header('Location: /phpbanhang/user/login');
             exit;
         }
-        session_start();
         $user = $this->userModel->getUserById($id);
         include_once 'app/views/users/profile.php';
     }

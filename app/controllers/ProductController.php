@@ -77,7 +77,7 @@ class ProductController
             $name = htmlspecialchars(strip_tags($_POST['name'] ?? ''));
             $products = $this->productsModel->getProductsByName($name);
             
-            include_once 'app/views/users/product/index.php';
+            include_once 'app/views/users/product/search.php';
         }
     }
     public function addtocartoneproduct($idProduct)
