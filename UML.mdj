@@ -37377,7 +37377,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGMzp0FjOj5jnA="
 							},
-							"name": "ActivityLogin",
+							"name": "ActivityMod/Admin",
 							"ownedViews": [
 								{
 									"_type": "UMLSwimlaneView",

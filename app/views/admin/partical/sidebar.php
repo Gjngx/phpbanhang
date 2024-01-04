@@ -2,8 +2,9 @@
   <!-- Sidebar scroll-->
   <div>
     <div class="brand-logo d-flex align-items-center justify-content-between">
-      <a href="/phpbanhang/admin" class="text-nowrap logo-img">
-        <img src="/phpbanhang/public/images/logos/dark-logo.svg" width="180" alt="" />
+      <a href="/admin" class="text-decoration-none">
+        <span class="h2 text-uppercase text-primary bg-dark px-2">GPPT</span>
+        <span class="h2 text-uppercase text-dark bg-primary px-2 ml-n1">Admin</span>
       </a>
       <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
         <i class="ti ti-x fs-8"></i>
