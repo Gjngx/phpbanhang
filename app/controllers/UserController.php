@@ -10,6 +10,12 @@ class UserController
         $this->db = (new Database())->getConnection();
         $this->userModel = new UserModel($this->db);
     }
+
+    public function setUserModel($userModel)
+    {
+        $this->userModel = $userModel;
+    }
+
     public function login()
     {
         include_once 'app/views/users/login.php';
@@ -69,7 +75,6 @@ class UserController
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
             if (empty($username) || empty($password)) {
-                session_start();
                 $_SESSION['errorMessage'] = "Vui lòng điền đầy đủ thông tin!";
                 header('Location: /phpbanhang/user/login');
                 exit();
@@ -85,6 +90,27 @@ class UserController
                 header('Location: /phpbanhang/user/login');
                 exit;
             }
+        }
+    }
+
+    public function checkLoginTest($username, $password)
+    {
+        session_start();
+        if (empty($username) || empty($password)) {
+            $_SESSION['errorMessage'] = "Vui lòng điền đầy đủ thông tin!";
+            header('Location: /phpbanhang/user/login');
+            exit();
+        }
+        $account = $this->userModel->getAccountByUserName($username);
+        if ($account && password_verify($password, $account->password)) {
+            $_SESSION['customer_id'] = $account->id;
+            $_SESSION['customer_username'] = $account->username;
+            header('Location: /phpbanhang/');
+            exit;
+        } else {
+            $_SESSION['errorMessage'] = "Đăng nhập không thành công.";
+            header('Location: /phpbanhang/user/login');
+            exit;
         }
     }
 

@@ -69,6 +69,12 @@ class CheckoutController
                 header('location: /phpbanhang/checkout');
                 exit();
             }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                session_start();
+                $_SESSION['errorMessage'] = "Email không hợp lệ!";
+                header('location: /phpbanhang/checkout');
+                exit();
+            }
             // Kiểm tra xác thực và phân quyền ở đây nếu cần
             if (!preg_match('/(84|0[3|5|7|8|9])+([0-9]{8})\b/', $phone)) {
                 $_SESSION['errorMessage'] = "Số điện thoại không hợp lệ.";

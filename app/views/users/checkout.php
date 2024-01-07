@@ -33,7 +33,7 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>E-mail</label>
-                                <input class="form-control" type="email" name="email" placeholder="example@email.com">
+                                <input class="form-control" type="text" name="email" placeholder="example@email.com">
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>Số điện thoại</label>

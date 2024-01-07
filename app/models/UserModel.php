@@ -38,7 +38,7 @@ class UserModel
     public function registerUser($username, $password, $email)
     {
         // Truy vấn tạo sản phẩm mới
-        $query = "INSERT INTO " . $this->table_name . " (username, password, email, name, phone, address) VALUES (:username, :password, :email, :name, :phone, :address)"; 
+        $query = "INSERT INTO " . $this->table_name . " (username, password, email, name, phone, address) VALUES (:username, :password, :email, :name, :phone, :address)";
         $stmt = $this->conn->prepare($query);
 
         // Làm sạch dữ liệu
