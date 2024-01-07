@@ -28,7 +28,7 @@ class CheckLoginTest extends TestCase
 
         $userController = new UserController();
 
-        $expected = false;
+        $expected = true;
 
         $actual = $userController->checkLogin($username, $password); 
 

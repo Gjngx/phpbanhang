@@ -109,23 +109,15 @@ class UserController
                 header('Location: /phpbanhang/user/register');
                 exit();
             }
-            if (!$this->isPasswordStrongEnough($password)) {
-                session_start();
-                $_SESSION['errorMessage'] = "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 số.";
-                header('Location: /phpbanhang/user/register');
-                exit();
-            }
-
-            if (!$this->isPasswordStrongEnough($password)) {
-                session_start();
-                $_SESSION['errorMessage'] = "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 số.";
-                header('Location: /phpbanhang/user/register');
-                exit();
-            }
-
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 session_start();
                 $_SESSION['errorMessage'] = "Email không hợp lệ!";
+                header('Location: /phpbanhang/user/register');
+                exit();
+            }
+            if (!$this->isPasswordStrongEnough($password)) {
+                session_start();
+                $_SESSION['errorMessage'] = "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 số.";
                 header('Location: /phpbanhang/user/register');
                 exit();
             }
