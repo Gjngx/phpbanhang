@@ -37,12 +37,6 @@ class UserModel
 
     public function registerUser($username, $password, $email)
     {
-        if ($this->getAccountByUsername($username)) {
-            return [
-                'success' => false,
-                'message' => 'Tên tài khoản đã tồn tại.'
-            ];
-        }
         // Truy vấn tạo sản phẩm mới
         $query = "INSERT INTO " . $this->table_name . " (username, password, email, name, phone, address) VALUES (:username, :password, :email, :name, :phone, :address)"; 
         $stmt = $this->conn->prepare($query);
@@ -75,6 +69,16 @@ class UserModel
             'success' => false,
             'message' => 'Đã xảy ra lỗi khi thêm tài khoản.'
         ];
+    }
+
+    public function isUserExistsUsername($username)
+    {
+        $query = "SELECT id FROM " . $this->table_name . " WHERE username = :username";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
     }
 
     public function updateUser($id, $name, $phone, $email, $address)
