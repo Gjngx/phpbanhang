@@ -41,7 +41,7 @@
 
                                         <div class="form-outline">
                                             <label class="form-label" for="email">Email</label>
-                                            <input type="email" name="email" class="form-control form-control-lg" />
+                                            <input type="text" name="email" class="form-control form-control-lg" />
                                         </div>
 
                                         <div class="form-outline">
