@@ -1,18 +1,41 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
-use phpbanhang\app\controllers\UserController;
+
 class LoginTest extends TestCase {
-    public function testCheckLoginWithEmptyPassword() {
+
+    public function testCheckLoginWithEmptyCredentials() {
         $controller = $this->getMockBuilder(UserController::class)
-            ->onlyMethods(['redirect'])
+            ->setConstructorArgs([$this->createMock(Database::class)]) // Mock Database class
+            ->onlyMethods(['getAccountByUserName'])
             ->getMock();
 
-        $_POST['username'] = 'admin';
+        $_POST['username'] = '';
         $_POST['password'] = '';
 
         $controller->checkLogin();
 
-        $this->expectOutputString('');
-        $this->assertStringContainsString('Vui lòng điền mật khẩu!', $_SESSION['errorMessage']);
+        $this->assertEquals('Vui lòng điền đầy đủ thông tin!', $_SESSION['errorMessage']);
     }
+
+    public function testCheckLoginWithInvalidCredentials() {
+        $mockDatabase = $this->createMock(Database::class);
+        $controller = $this->getMockBuilder(UserController::class)
+            ->setConstructorArgs([$mockDatabase])
+            ->onlyMethods(['getAccountByUserName'])
+            ->getMock();
+
+        $_POST['username'] = 'invalid_username';
+        $_POST['password'] = 'invalid_password';
+
+        $mockDatabase->expects($this->once())
+            ->method('getAccountByUserName')
+            ->willReturn(false);
+
+        $controller->checkLogin();
+
+        $this->assertEquals('Đăng nhập không thành công.', $_SESSION['errorMessage']);
+    }
+
+
 }
