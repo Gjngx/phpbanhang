@@ -17,6 +17,7 @@ class CheckoutController
             header('Location: /phpbanhang/user/login');
             exit;
         }
+        
         if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
             $idProducts = array_keys($_SESSION['cart']);
             $cartProducts = $this->productsModel->getProductsByIds($idProducts);
